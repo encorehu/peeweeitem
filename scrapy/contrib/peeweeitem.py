@@ -10,23 +10,15 @@ class PeeweeItemMeta(ItemMeta):
     def  __new__(mcs, class_name, bases, attrs):
         cls = super(PeeweeItemMeta, mcs).__new__(mcs, class_name, bases, attrs)
         cls.fields = cls.fields.copy()
-        print 'class fields ',type(cls.fields), cls.fields
 
         if cls.peewee_model:
             cls._model_fields = []
             cls._model_meta = cls.peewee_model._meta
-            # cls._model_meta.fields is a dict, donot like in django which is a list
-            print 'peewee_model fields:', type(cls._model_meta.fields), cls._model_meta.fields.keys()
             for name, model_field in cls._model_meta.fields.iteritems():
-                print name, model_field.name, type(model_field), model_field
-                #print 'dir(model_field)', dir(model_field)
-                print 'model_field.primary_key', model_field.primary_key, model_field.constraints,
-                print model_field.default
                 if not model_field.primary_key:
                     if model_field.name not in cls.fields:
                         cls.fields[model_field.name] = Field()
                     cls._model_fields.append(model_field.name)
-        print 'cls.fields',cls.fields
         return cls
 
 
@@ -37,10 +29,8 @@ class PeeweeItem(Item):
     peewee_model = None
 
     def __init__(self, *args, **kwargs):
-        print '*args, **kwargs', args, kwargs
         super(PeeweeItem, self).__init__(*args, **kwargs)
 
-        print 'self init, now is:', self
         self._instance = None
         self._errors = None
 
@@ -83,6 +73,5 @@ class PeeweeItem(Item):
         if self._instance is None:
             modelargs = dict((k, self.get(k)) for k in self._values
                              if k in self._model_fields)
-            print 'modelargs', modelargs
             self._instance = self.peewee_model(**modelargs)
         return self._instance
