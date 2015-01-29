@@ -30,11 +30,14 @@ class PersonItem2(scrapy.Item):
     nickname=scrapy.Field(default='No Nickname')
 
 p = PersonItem2()
-print 'p2',p, p.fields
+print 'p2',p #, p.fields
 p['name'] = 'John'
 p['age'] = '22'
-print 'p2',p, p.fields
-
+print 'p2',p #, p.fields
+try:
+    p.save()
+except Exception as e:
+    print e
 #Defining a basic DjangoItem:
 
 from scrapy.contrib.peeweeitem import PeeweeItem
