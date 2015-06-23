@@ -31,6 +31,12 @@ class PeeweeItem(Item):
     def __init__(self, *args, **kwargs):
         super(PeeweeItem, self).__init__(*args, **kwargs)
 
+        #if do not add here, should hack in file scrapy/item.py
+        # at class DictItem __init__
+        for k,v in self.fields.iteritems():
+            if v:
+                self[k]=v.get('default', None)
+
         self._instance = None
         self._errors = None
 
