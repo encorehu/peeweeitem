@@ -81,3 +81,11 @@ class PeeweeItem(Item):
                              if k in self._model_fields)
             self._instance = self.peewee_model(**modelargs)
         return self._instance
+
+def model_to_item(model_instance, item_class):
+    item=item_class()
+    if isinstance(model_instance, item.peewee_model):
+        for k,v in item.fields.iteritems():
+            if hasattr(model_instance,k):
+                item[k] = getattr(model_instance, k)
+    return item
